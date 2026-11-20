@@ -70,7 +70,7 @@ npm test        # 11 storefront data, routes, cart, checkout and motion tests
 npm run build   # Produce deployable output in dist/
 ```
 
-The archive includes a real Git repository with separate development branches and merge commits. Double-click `PUBLISH_TO_GITHUB.command` on macOS for an interactive private-repository publishing flow. It never backdates Git commits.
+The archive includes a real Git repository with separate development branches and merge commits. Double-click `PUBLISH_TO_GITHUB.command` on macOS to publish the existing Git history to **[xuanz3/CPS-Sports](https://github.com/xuanz3/CPS-Sports)**. The script checks the existing remote branch before pushing, uploads `main` and `develop`, and publishes release tags. It will not force-push, overwrite remote history, or backdate commits. If macOS blocks launching the script, open Terminal in this folder and run `bash PUBLISH_TO_GITHUB.command`. Authentication is handled by GitHub CLI if installed, otherwise Git uses the credentials configured on your Mac.
 
 ### Cloudflare Pages
 
