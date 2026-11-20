@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.pytest_cache/
+__pycache__/
+preview-*.png
+asset-contact-sheet*.jpg
