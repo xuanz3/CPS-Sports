@@ -2,9 +2,9 @@ from PIL import Image, ImageFilter, ImageEnhance
 import numpy as np
 import cv2
 from pathlib import Path
-P=Path(__file__).parent
-S=Image.open('/mnt/data/a_high_detail_photorealistic_website_homepage_scr.png').convert('RGB')
-hero=Image.open('/mnt/data/a_dramatic_cinematic_sports_scene_in_an_indoor_ba.png').convert('RGB')
+P=Path(__file__).resolve().parent.parent / 'assets'
+S=Image.open(P/'source'/'products-source.png').convert('RGB')
+hero=Image.open(P/'source'/'hero-source.png').convert('RGB')
 hero.save(P/'hero-badminton.webp',format='WEBP',quality=91,method=6)
 # Content crops from original artwork. Fully synthetic product imagery, no third-party trademarks.
 items={
@@ -81,5 +81,10 @@ for k,rect in cats.items():
  canvas=Image.new('RGBA',(360,290))
  im.thumbnail((310,250),Image.Resampling.LANCZOS)
  canvas.alpha_composite(im,((360-im.width)//2,(290-im.height)//2))
+ if k=='accessories':
+  import numpy as np
+  a=np.array(canvas.getchannel('A'));a[:45,:]=0
+  from PIL import Image
+  canvas.putalpha(Image.fromarray(a))
  canvas.save(P/f'cat-{k}.png',optimize=True)
 print('generated',len(list(P.glob('*.png'))),'PNG assets')
