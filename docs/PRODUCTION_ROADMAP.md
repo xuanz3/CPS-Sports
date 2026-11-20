@@ -1,32 +1,26 @@
-# CPS SPORTS — Production Readiness Plan
+# CPS SPORTS — Production Readiness Roadmap
 
-## 已实现
+## Implemented in this release
 
-- 独立风格网站与响应式页面
-- 8 个运动分类，24 件可检索商品样品
-- 多维商品列表、搜索、排序、价格及现货筛选
-- 产品详情 / 颜色与数量选择 / 关联推荐
-- 购物车金额、运费、测试优惠码、本地持久化
-- 测试结算表单、测试订单历史
-- 页面元信息、基本无障碍标签、减少动画设置
-- Node 自动测试、Cloudflare Pages 静态构建、GitHub Actions CI 配置
+- English-language, responsive product-discovery storefront.
+- Owner-supplied imagery for all 41 product entries, with preserved image originals.
+- Eight sport categories, searchable product catalog and price/sort filters.
+- Product details, quick view, wishlist, bag drawer and full cart.
+- Client-side preview checkout and browser-local preview order history.
+- Dedicated motion system and accessible reduced-motion preferences.
+- Continuous integration for syntax checks, business tests and static builds.
 
-## 正式营业前必须完成
+## Required before taking orders
 
-1. **商户和产品真实资料**：确认合法经营主体、商品目录、真实定价和库存、服务与售后负责人、配送范围、税费和退换货说明。
-2. **真实高清图片**：每个 SKU 上传授权原生 2K 商品图、多角度详情、规范抠图；对每张图校验真实性。
-3. **登录/账号**：Supabase Auth，用户、地址及订单归属；所有个人信息经 HTTPS 传输，最小化收集。
-4. **商品/订单数据库**：采用 `docs/schema.sql`，创建合适索引与行级权限控制，明确后台管理员权限。客户端不能任意写价格、库存和订单付款状态。
-5. **安全付款**：服务端使用可信 SKU 和价格创建 Stripe Checkout Session；客户端不传可篡改单价。Webhook 签名校验与事件去重；支付成功后才推进订单状态。
-6. **库存与履约**：数据库事务锁定库存，防重复扣库存，超卖保护，取消 / 退款时补偿库存；提供物流追踪和售后操作。
-7. **法律与合规**：针对目标销售国家/地区完善用户协议、隐私政策、Cookie、广告合规、退货及消费者权益说明。
-8. **上线测试**：支付失败、重复回调、并发购买、移动端网络、键盘操作、Core Web Vitals、图片加载、备份和异常告警。
+1. Verify retail image-use permissions, actual brand authorisation where applicable, and verified product data.
+2. Replace all indicative prices, descriptions and unverified stock values with genuine inventory data.
+3. Connect server-owned pricing, stock and tax logic to a persistent commerce database.
+4. Add secure user authentication and an admin product/fulfilment panel.
+5. Implement Stripe or another authorised payment provider with server-side sessions and signed webhooks.
+6. Prevent client-created orders from being treated as paid; verify all transitions server-side.
+7. Add shipping, taxes, valid consumer policy pages, support contacts, and return flows for the launch market.
+8. Perform accessibility, cross-device, browser, transaction and security acceptance testing.
+9. Configure fraud protections, observability, inventory reservations, backups and incident procedures.
+10. Replace preview checkout copy only after successful production verification.
 
-## 版本划分
-
-- **0.1**：当前完整可运行的静态前台及测试订单（不收款）。
-- **0.2**：商品 CMS + 真实商品图片 + Supabase Auth / PostgreSQL。
-- **0.3**：安全的 Stripe Checkout + Webhooks + 真实订单和库存。
-- **1.0**：运营后台、配送、税费、合规、监控、生产环境发布。
-
-不要在 0.1 版本上直接开放真实付款。
+The project must not claim to accept payment or fulfil orders until these integrations are complete.

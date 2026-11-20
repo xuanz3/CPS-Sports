@@ -1,40 +1,77 @@
+/** CPS SPORTS catalog. All imagery derived exclusively from owner-provided Pics.zip.
+ * Product names identify the visible items; prices are illustrative preview values.
+ */
 export const CATEGORIES = [
- {slug:'fitness',name:'健身训练',en:'FITNESS',short:'健身',image:'/assets/cat-fitness.png',desc:'超越每一次极限，塑造更强大的自己。',menu:['哑铃与杠铃','力量训练','瑜伽与恢复','训练护具']},
- {slug:'badminton',name:'羽毛球',en:'BADMINTON',short:'羽毛球',image:'/assets/cat-badminton.png',desc:'轻盈操控，速度与精准的完美平衡。',menu:['羽毛球拍','羽毛球','拍线与握把','球包']},
- {slug:'volleyball',name:'排球',en:'VOLLEYBALL',short:'排球',image:'/assets/cat-volleyball.png',desc:'每一次起跳，都为突破而来。',menu:['专业排球','训练用球','护膝','排球网']},
- {slug:'tennis',name:'网球',en:'TENNIS',short:'网球',image:'/assets/cat-tennis.png',desc:'精准控球，掌握赛场上的每一分。',menu:['网球拍','网球','拍线','球包']},
- {slug:'table-tennis',name:'乒乓球',en:'TABLE TENNIS',short:'乒乓球',image:'/assets/cat-table-tennis.png',desc:'旋转与速度之间，尽显技术锋芒。',menu:['乒乓球拍','胶皮','乒乓球','训练配件']},
- {slug:'football',name:'足球',en:'FOOTBALL',short:'足球',image:'/assets/cat-football.png',desc:'为热爱奔跑，为下一场胜利蓄势。',menu:['比赛用球','足球鞋','训练器材','护具']},
- {slug:'basketball',name:'篮球',en:'BASKETBALL',short:'篮球',image:'/assets/cat-basketball-cat.png',desc:'从街头到球场，把每一球打出态度。',menu:['专业篮球','训练篮球','护具','训练配件']},
- {slug:'accessories',name:'运动配件',en:'ACCESSORIES',short:'配件',image:'/assets/cat-accessories.png',desc:'每一个细节，都值得认真对待。',menu:['运动包','水壶','运动袜','日常配件']}
+  {slug:'all',name:'All sports',eyebrow:'THE COMPLETE EDIT',tagline:'Explore the entire equipment edit.',image:'/assets/editorial/sports-balls.webp'},
+  {slug:'badminton',name:'Badminton',eyebrow:'PRECISION / 01',tagline:'A faster game begins with the right equipment.',image:'/assets/products/badminton-63502401.webp'},
+  {slug:'fitness',name:'Fitness',eyebrow:'STRENGTH / 02',tagline:'Built around the work you put in.',image:'/assets/products/fitness-423989.webp'},
+  {slug:'volleyball',name:'Volleyball',eyebrow:'ELEVATION / 03',tagline:'Own the next point.',image:'/assets/products/volleyball-66937901.webp'},
+  {slug:'tennis',name:'Tennis',eyebrow:'CONTROL / 04',tagline:'Find your edge on every court.',image:'/assets/products/tennis-70992901_blue.webp'},
+  {slug:'table-tennis',name:'Table tennis',eyebrow:'REFLEX / 05',tagline:'Precision in the smallest margins.',image:'/assets/products/table-tennis-736848.webp'},
+  {slug:'football',name:'Football',eyebrow:'MOMENTUM / 06',tagline:'A game made to move.',image:'/assets/products/football-74162101_yellow.webp'},
+  {slug:'basketball',name:'Basketball',eyebrow:'ENERGY / 07',tagline:'Make the court yours.',image:'/assets/products/basketball-72897001_orange.webp'},
+  {slug:'accessories',name:'Accessories',eyebrow:'THE DETAILS / 08',tagline:'The finishing touches for your session.',image:'/assets/products/football-73691701_black.webp'}
 ];
-const p=(id,name,english,category,price,image,description,options={})=>({id,slug:id,name,english,category,price,image,description,stock:options.stock??18,badge:options.badge||'',oldPrice:options.oldPrice||null,featured:!!options.featured,rating:options.rating||4.9,colors:options.colors||['经典配色'],specs:options.specs||{},material:options.material||'专业运动级复合材料',tech:options.tech||'平衡设计 · 稳定表现'});
+const item=(category,id,name,brand,price,flags='',alt='',tags=[])=>({
+  id:`${category}-${id}`,slug:`${category}-${id}`,category,categories:[category,...tags],name,brand,price,
+  image:`/assets/products/${category}-${id}.webp`,
+  alt:alt||`${brand} ${name} product photograph`,
+  badge:flags,stock:16,sku:id.split('_')[0],
+  description:`A considered addition to your ${category.replace('-',' ')} setup. Explore the product photography and details before choosing your gear.`,
+});
 export const PRODUCTS=[
- p('aero-9000','AERO 9000 专业羽毛球拍','AERO 9000 RACKET','badminton',1299,'/assets/product-racket.png','轻量碳素拍框与精准平衡设计，为快速连续进攻而生。',{badge:'新品',featured:true,colors:['深海蓝','曜石黑'],specs:{重量:'4U / 约 83g',拍框:'高模量碳纤维',平衡:'均衡型',适合:'中高级球员'}}),
- p('aero-7000','AERO 7000 全能羽毛球拍','AERO 7000 RACKET','badminton',899,'/assets/product-racket.png','面向攻守兼备的球员，兼顾挥速与击球稳定性。',{featured:true,colors:['深蓝','银灰'],specs:{重量:'4U / 约 83g',拍框:'碳纤维复合',拍杆:'中等硬度'}}),
- p('flight-pro','FLIGHT PRO 训练羽毛球','FLIGHT PRO SHUTTLE','badminton',129,'/assets/cat-badminton.png','标准飞行轨迹，适用于日常训练与俱乐部运动。',{badge:'热销',specs:{规格:'12 只装',材质:'复合羽毛'}}),
- p('strength-40','STRENGTH 可调节哑铃套装','ADJUSTABLE DUMBBELL SET','fitness',899,'/assets/product-dumbbell.png','模块化配重设计，适合家庭力量训练与渐进式负重。',{badge:'热销',featured:true,oldPrice:1099,specs:{重量:'40kg 套装',材质:'精钢配重',握把:'防滑纹理'}}),
- p('strength-20','STRENGTH 20KG 哑铃','HOME DUMBBELL','fitness',499,'/assets/product-dumbbell.png','紧凑的家用自由重量训练装备。',{specs:{重量:'20kg 套装',材质:'钢芯配重'}}),
- p('core-band','CORE 弹力训练带套装','RESISTANCE KIT','fitness',159,'/assets/cat-fitness.png','支持热身、激活、辅助训练及动作恢复。',{badge:'新品',specs:{阻力:'多档组合',配件:'收纳袋'}}),
- p('v-force','V-FORCE 比赛排球','V-FORCE MATCH VOLLEYBALL','volleyball',259,'/assets/cat-volleyball.png','稳定的空中轨迹与柔和触感，专为高强度对抗设计。',{badge:'热销',featured:true,specs:{规格:'5 号标准球',外层:'复合皮革'}}),
- p('v-practice','V-PRACTICE 训练排球','TRAINING VOLLEYBALL','volleyball',179,'/assets/cat-volleyball.png','耐用耐磨，适合日常教学与团队训练。',{specs:{规格:'5 号',用途:'训练'}}),
- p('v-knee','V-GUARD 排球护膝','VOLLEYBALL KNEE PADS','volleyball',119,'/assets/cat-volleyball.png','加强缓震保护，让每一次救球更从容。',{specs:{尺码:'S / M / L',面料:'弹性透气织物'}}),
- p('tour-98','TOUR 98 专业网球拍','TOUR 98 TENNIS RACKET','tennis',1099,'/assets/product-racket.png','精准控制与稳定回馈，适用于追求手感的进阶球员。',{badge:'新品',featured:true,specs:{拍面:'98 sq in',重量:'305g (未穿线)',材质:'石墨复合'}}),
- p('tour-100','TOUR 100 网球拍','TOUR 100 RACKET','tennis',799,'/assets/product-racket.png','更大的甜区，为快速对抗带来更高容错空间。',{specs:{拍面:'100 sq in',重量:'290g'}}),
- p('ace-tennis','ACE 高弹网球','ACE TENNIS BALLS','tennis',79,'/assets/cat-tennis.png','稳定弹跳与清晰击球反馈。',{specs:{规格:'3 球装',用途:'训练 / 比赛'}}),
- p('spin-pro','SPIN PRO 乒乓球拍','SPIN PRO TABLE TENNIS','table-tennis',399,'/assets/cat-table-tennis.png','偏重旋转与控球的均衡型球拍。',{badge:'新品',featured:true,specs:{类型:'双面反胶',手柄:'横拍 FL'}}),
- p('spin-lite','SPIN LITE 入门乒乓球拍','SPIN LITE PADDLE','table-tennis',189,'/assets/cat-table-tennis.png','手感直接，帮助建立稳定的基础技术。',{specs:{类型:'双面反胶',手柄:'横拍'}}),
- p('rally-balls','RALLY 训练乒乓球','RALLY BALLS','table-tennis',49,'/assets/cat-table-tennis.png','适合多球训练的高耐用度乒乓球。',{specs:{规格:'40+ / 6 只装'}}),
- p('match-fg','SPEEDX FG 专业足球鞋','SPEEDX FG FOOTBALL BOOT','football',699,'/assets/product-football-boot.png','轻盈贴合，抓地迅猛，为快速变向和冲刺设计。',{badge:'推荐',featured:true,colors:['冰川白 / 深蓝','曜石黑'],specs:{鞋底:'FG 硬质天然草',鞋面:'合成纤维',尺码:'39–45'}}),
- p('match-ball','MATCH PRO 足球','MATCH PRO FOOTBALL','football',269,'/assets/cat-football.png','稳定球体结构与柔韧触感。',{featured:true,specs:{规格:'5 号标准球',结构:'机缝复合'}}),
- p('academy-ball','ACADEMY 训练足球','ACADEMY FOOTBALL','football',169,'/assets/cat-football.png','适用于学校、俱乐部与日常训练。',{specs:{规格:'4 / 5 号'}}),
- p('elite-basketball','ELITE PRO 7号篮球','ELITE PRO BASKETBALL','basketball',329,'/assets/product-basketball.png','高摩擦颗粒表皮与深沟槽设计，运控触感稳定。',{badge:'热销',featured:true,specs:{规格:'7 号',场地:'室内 / 室外',材质:'复合皮革'}}),
- p('street-basketball','STREET 7号篮球','STREET BASKETBALL','basketball',229,'/assets/cat-basketball-cat.png','专为街头场地优化，兼顾耐磨和良好抓握感。',{specs:{规格:'7 号',场地:'室外'}}),
- p('junior-basketball','JUNIOR 5号训练篮球','JUNIOR BASKETBALL','basketball',169,'/assets/cat-basketball-cat.png','适合青少年日常练习的轻量设计。',{specs:{规格:'5 号'}}),
- p('transit-bag','TRANSIT 运动装备包','TRANSIT SPORT BAG','accessories',299,'/assets/cat-accessories.png','独立分仓与耐磨面料，让训练装备各归其位。',{badge:'新品',featured:true,colors:['深海蓝','黑色'],specs:{容量:'35 L',面料:'防泼水聚酯纤维'}}),
- p('daily-bag','DAILY 训练收纳包','DAILY GEAR BAG','accessories',199,'/assets/cat-accessories.png','简洁可靠的每日训练收纳方案。',{specs:{容量:'22 L'}}),
- p('grip-tape','GRIP PRO 防滑握把带','GRIP PRO TAPE','accessories',39,'/assets/cat-accessories.png','细腻触感与稳定抓握表现。',{specs:{规格:'3 条装',材质:'吸汗复合材料'}})
+  item('badminton','63502401','Performance Badminton Racquet — Teal','Court Series',129,'NEW','Teal badminton racquet with white string bed'),
+  item('badminton','70918001','Performance Badminton Racquet — Blue','Court Series',149,'','Blue badminton racquet with white string bed'),
+  item('badminton','63502201','Performance Badminton Racquet — Red','Court Series',99,'','Red badminton racquet with white string bed'),
+  item('badminton','53501201','Mavis 600 Shuttlecocks','Yonex',35,'POPULAR','Tube of Yonex Mavis 600 shuttlecocks'),
+  item('badminton','63239501','Feather Shuttlecocks','Prince',24,'','Prince shuttlecock tube and shuttlecock'),
+  item('badminton','53836301','Towel Grip Roll','Yonex',14,'','Yonex yellow towel grip roll in packaging',['accessories']),
+  item('fitness','423989','Hex Dumbbell Pair — Black','Strength Edit',89,'BEST SELLER','Two black hex dumbbells with chrome grip'),
+  item('fitness','423990','Hex Dumbbell — Compact','Strength Edit',49,'','Black hex dumbbell with chrome grip'),
+  item('fitness','423993','Hex Dumbbell — Heavy','Strength Edit',109,'','Black hex dumbbells with textured ends'),
+  item('fitness','423986','Neoprene Hex Dumbbell — Black','Strength Edit',25,'','Single black hex neoprene dumbbell'),
+  item('fitness','420574','Neoprene Dumbbell — Yellow','Strength Edit',22,'','Yellow neoprene coated dumbbell'),
+  item('fitness','420579','Neoprene Dumbbell — Blue','Strength Edit',22,'','Turquoise blue neoprene coated dumbbell'),
+  item('fitness','420581','Neoprene Dumbbell — Red','Strength Edit',22,'','Red neoprene coated dumbbell'),
+  item('volleyball','66937901','Beach Pro Volleyball','Mikasa',99,'POPULAR','White blue and yellow Mikasa beach volleyball'),
+  item('volleyball','58004201','Indoor Match Volleyball','Mikasa',119,'NEW','Blue and yellow Mikasa indoor volleyball'),
+  item('volleyball','67558101','Training Volleyball Pack','Mikasa',179,'','Mesh bag filled with Mikasa volleyballs'),
+  item('volleyball','67557001','Volleyball Equipment Bag','Mikasa',89,'','Blue and yellow Mikasa volleyball bag',['accessories']),
+  item('volleyball','56457501_black','Volleyball Knee Pads — Black','Nike',45,'','Black Nike knee pad',['accessories']),
+  item('tennis','70992901_blue','Tour Tennis Racquet — Blue','Court Series',199,'NEW','Blue and white tennis racquet'),
+  item('tennis','65259701_black','Control Tennis Racquet','Court Series',169,'','Black and yellow tennis racquet'),
+  item('tennis','74262401_grey','Tour Tennis Racquet — Grey','Court Series',189,'','Grey and pink tennis racquet'),
+  item('tennis','707544','Australian Open Tennis Balls','AO',19,'','Blue AO tennis ball tube with tennis ball'),
+  item('tennis','72801701','Tennis Ball Water Bottle','AO',29,'','Tall blue and white tennis ball themed water bottle',['accessories']),
+  item('table-tennis','736848','Classic Table Tennis Bat','Table Series',39,'POPULAR','Red table tennis paddle and wood handle'),
+  item('table-tennis','736850','Control Table Tennis Bat','Table Series',45,'','Red table tennis bat with yellow detail'),
+  item('table-tennis','736851','Competition Table Tennis Bat','Table Series',49,'','Red table tennis bat with pale wood handle'),
+  item('table-tennis','597932','Training Table Tennis Balls','Table Series',29,'','Jar of orange table tennis balls'),
+  item('table-tennis','714024','Foldable Table Tennis Table','Table Series',599,'','Full-sized folding ping pong table'),
+  item('football','74162101_yellow','Match Football — Yellow','Puma',59,'NEW','Yellow and pink Puma football'),
+  item('football','73691401_white','Match Football — White','Football Edit',45,'','White football with red and grey graphic'),
+  item('football','73850001-01_orange','Speed Football Boots — Red','Football Edit',179,'','Red football boots with black detail'),
+  item('football','74089801-01_orange','Speed Football Boots — Orange','Football Edit',189,'','Orange football boots with dark detailing'),
+  item('football','73691701_black','Goalkeeper Gloves — Black','Nike',69,'','Black Nike goalkeeper gloves',['accessories']),
+  item('football','73002101_blackwhite','Goalkeeper Gloves — White','Nike',65,'','White and black Nike goalkeeper gloves',['accessories']),
+  item('basketball','72897001_orange','React Basketball','Spalding',59,'BEST SELLER','Orange Spalding React basketball'),
+  item('basketball','56206301_orangeblack','Rebound Basketball','Spalding',49,'','Brown Spalding basketball'),
+  item('basketball','74032401','Junior Hooper Basketball','Spalding',39,'','Colourful Spalding junior basketball'),
+  item('basketball','70236301_red','Court Basketball Shoes — Red','Nike',189,'NEW','Red Nike basketball shoes'),
+  item('basketball','71572501_blue','Court Basketball Shoes — Aqua','Nike',199,'','Aqua and yellow Nike basketball shoes'),
+  item('basketball','561816','Portable Basketball Hoop','Basketball Edit',499,'','Black mobile basketball hoop and backboard'),
+  item('basketball','74303301_red','Jumpman Graphic Tee — Red','Jordan',55,'','Red Jordan basketball T-shirt',['accessories'])
 ];
-export const getProduct = slug=>PRODUCTS.find(p=>p.slug===slug);
-export const getCategory = slug=>CATEGORIES.find(c=>c.slug===slug);
-export const money = n => `¥${Number(n||0).toLocaleString('zh-CN',{maximumFractionDigits:2})}`;
+export const FEATURED_IDS = ['badminton-63502401','fitness-423989','basketball-72897001_orange','volleyball-66937901','tennis-70992901_blue','football-74162101_yellow','basketball-70236301_red','table-tennis-736848'];
+export const getProduct=(slug)=>PRODUCTS.find(p=>p.slug===slug);
+export const getCategory=(slug)=>CATEGORIES.find(c=>c.slug===slug);
+export const money=(n)=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:2,minimumFractionDigits:0}).format(n);
+export const searchCatalog=(query='',category='all',sort='featured',maxPrice=Infinity)=>{
+ const q=query.trim().toLocaleLowerCase('en-AU');
+ let filtered=PRODUCTS.filter(p=>(category==='all'||p.categories.includes(category))&&p.price<=maxPrice&&(!q||`${p.name} ${p.brand} ${p.category} ${p.sku}`.toLowerCase().includes(q)));
+ if(sort==='price-low')filtered.sort((a,b)=>a.price-b.price);
+ else if(sort==='price-high')filtered.sort((a,b)=>b.price-a.price);
+ else if(sort==='name')filtered.sort((a,b)=>a.name.localeCompare(b.name));
+ else filtered.sort((a,b)=>(FEATURED_IDS.includes(b.id)?1:0)-(FEATURED_IDS.includes(a.id)?1:0));
+ return filtered;
+};

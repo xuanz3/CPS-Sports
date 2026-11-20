@@ -1,9 +1,9 @@
 {
   "name": "cps-sports",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "CPS SPORTS premium multi-sport storefront",
+  "description": "CPS SPORTS premium sports storefront — visual interaction edition by Xuanze Chen",
   "scripts": {
     "dev": "python3 -m http.server 4173",
     "test": "node --test tests/*.test.mjs",

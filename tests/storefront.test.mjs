@@ -1,65 +1,99 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {fileURLToPath} from 'node:url';
 import path from 'node:path';
-import {CATEGORIES,PRODUCTS,money} from '../src/data.js';
+import {fileURLToPath} from 'node:url';
+import {CATEGORIES,PRODUCTS,FEATURED_IDS,money,searchCatalog,getProduct} from '../src/data.js';
 
 const root=path.resolve(fileURLToPath(new URL('..',import.meta.url)));
-const events={},windowEvents={},kv=new Map;
-let app={innerHTML:''};let toast={textContent:'',classList:{add(){},remove(){}}};
-globalThis.localStorage={getItem(k){return kv.get(k)||null},setItem(k,v){kv.set(k,v)}};
-globalThis.location={pathname:'/',search:'',hash:''};
-globalThis.history={pushState(_a,_b,url){const u=new URL(url,'https://cps.example');globalThis.location={pathname:u.pathname,search:u.search,hash:u.hash}}};
-globalThis.document={getElementById(id){return id==='app'?app:toast},addEventListener(name,cb){events[name]=cb},querySelector(){return null}};
-globalThis.window={innerWidth:1440,scrollY:0,addEventListener(name,cb){windowEvents[name]=cb},scrollTo(){}};
-globalThis.scrollY=0;
-globalThis.FormData=class {constructor(el){this.fields=el.fields||{}}get(k){return this.fields[k]}};
+const handlers={},winHandlers={},storage=new Map;
+const app={innerHTML:''};
+const toast={innerHTML:'',classList:{add(){},remove(){}}};
+const body={classList:{toggle(){}}};
+globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
+globalThis.location={pathname:'/',search:'',hash:'',origin:'http://localhost:4173'};
+globalThis.history={pushState(_a,_b,url){setLocation(url)},replaceState(_a,_b,url){setLocation(url)}};
+globalThis.document={getElementById(id){return id==='app'?app:id==='toast'?toast:null},addEventListener(type,handler){handlers[type]=handler},querySelector(){return null},querySelectorAll(){return []},body,hidden:false};
+globalThis.window={matchMedia:()=>({matches:true}),scrollY:0,addEventListener(type,handler){winHandlers[type]=handler},scrollTo(){}};
+globalThis.requestAnimationFrame=callback=>callback();
+globalThis.FormData=class{constructor(form){this.fields=form.fields||{}}get(k){return this.fields[k]}};
+function setLocation(url){const u=new URL(url,'http://localhost:4173');globalThis.location={pathname:u.pathname,search:u.search,hash:u.hash,origin:u.origin}}
 await import('../src/app.js');
-function setRoute(url){const u=new URL(url,'https://cps.example');globalThis.location={pathname:u.pathname,search:u.search,hash:u.hash};windowEvents.popstate()}
-function clickAction(action,data={}){events.click({target:{closest(sel){return sel==='[data-action]'?{dataset:{action,...data}}:null}},button:0,preventDefault(){}})}
-function submit(id,fields){events.submit({target:{id,fields,reportValidity(){return true},reset(){}},preventDefault(){}})}
+function route(url){setLocation(url);winHandlers.popstate()}
+function click(action,data={}){handlers.click({target:{closest(selector){return selector==='[data-action]'?{dataset:{action,...data}}:null}},preventDefault(){},button:0})}
+function submit(id,fields){handlers.submit({target:{id,fields,reportValidity(){return true}},preventDefault(){}})}
 
-test('eight sport categories and valid seed catalog',()=>{
- assert.equal(CATEGORIES.length,8);assert.equal(PRODUCTS.length,24);
- assert.equal(new Set(PRODUCTS.map(x=>x.id)).size,PRODUCTS.length);
- assert.ok(PRODUCTS.every(x=>x.price>0&&x.stock>=0&&CATEGORIES.find(c=>c.slug===x.category)));
- assert.equal(money(1299),'¥1,299');
- for (const asset of [...PRODUCTS.map(p=>p.image),...CATEGORIES.map(c=>c.image),'/assets/hero-badminton.webp']) assert.ok(fs.existsSync(path.join(root,asset)),`Missing ${asset}`);
+test('catalog uses exactly the user-supplied forty-one product images',()=>{
+ assert.equal(CATEGORIES.length-1,8);
+ assert.equal(PRODUCTS.length,41);
+ assert.equal(new Set(PRODUCTS.map(p=>p.id)).size,41);
+ assert.ok(PRODUCTS.every(p=>p.price>0&&p.stock>=0&&fs.existsSync(path.join(root,p.image.slice(1)))));
+ assert.ok(PRODUCTS.every(p=>!p.image.includes('cat-')&&!p.image.includes('product-racket')));
+ assert.equal(fs.readdirSync(path.join(root,'assets/products')).filter(x=>x.endsWith('.webp')&&!x.includes('-transparent')).length,41);
+ assert.equal(money(125),'$125');
 });
-test('homepage renders hero, eight categories, featured products',()=>{
- setRoute('/');assert.match(app.innerHTML,/速度为刃/);assert.match(app.innerHTML,/羽毛球/);
- assert.match(app.innerHTML,/精选推荐/);assert.match(app.innerHTML,/加入购物车/)
+test('search and filters remain deterministic',()=>{
+ assert.equal(searchCatalog('','badminton').length,6);
+ assert.equal(searchCatalog('','fitness').length,7);
+ assert.equal(searchCatalog('','accessories').length,7);
+ assert.equal(searchCatalog('Nike').length,5);
+ const ordered=searchCatalog('','all','price-low');assert.ok(ordered.every((p,i)=>!i||p.price>=ordered[i-1].price));
+ assert.equal(getProduct('not-real'),undefined);
 });
-test('sports catalog and keyword search',()=>{
- setRoute('/sports/badminton');assert.match(app.innerHTML,/羽毛球/);assert.match(app.innerHTML,/找到 3 件商品/);
- setRoute('/shop?q=篮球');assert.match(app.innerHTML,/搜索：篮球/);assert.match(app.innerHTML,/ELITE PRO/);
- setRoute('/shop?q=%3Cscript%3E');assert.doesNotMatch(app.innerHTML,/<script>/);assert.match(app.innerHTML,/没有找到符合条件的商品/)
+test('homepage is English with featured navigation, carousel and motion affordances',()=>{
+ route('/');assert.match(app.innerHTML,/MAKE EVERY/);assert.match(app.innerHTML,/Discover/);
+ assert.match(app.innerHTML,/Quick view/);assert.match(app.innerHTML,/Add to bag/);
+ assert.match(app.innerHTML,/XUANZE CHEN/);assert.match(app.innerHTML,/hero-progress-item/);
+ click('hero-next');assert.match(app.innerHTML,/FIND YOUR/);
+ click('hero-prev');assert.match(app.innerHTML,/MAKE EVERY/);
 });
-test('product detail includes variant, specifications and purchase controls',()=>{
- setRoute('/products/aero-9000');assert.match(app.innerHTML,/AERO 9000/);
- assert.match(app.innerHTML,/碳纤维/);assert.match(app.innerHTML,/深海蓝/);assert.match(app.innerHTML,/加入购物车/)
+test('product catalog supports search and encoded HTML is escaped',()=>{
+ route('/sports/badminton');assert.match(app.innerHTML,/6 pieces to explore/);
+ route('/shop?q=Mikasa');assert.match(app.innerHTML,/Mikasa/);
+ route('/shop?q=%3Cscript%3E');assert.doesNotMatch(app.innerHTML,/<script>/);
+ assert.match(app.innerHTML,/No matching equipment/);
 });
-test('wishlist persistence and clearing',()=>{
- setRoute('/shop');clickAction('wishlist',{id:'aero-9000'});assert.match(kv.get('cps-sports-wishlist'),/aero-9000/);
- setRoute('/wishlist');assert.match(app.innerHTML,/AERO 9000/);
- clickAction('wishlist',{id:'aero-9000'});assert.equal(kv.get('cps-sports-wishlist'),'[]')
+test('detail shows only one supplied gallery image and supports quantity adjustments',()=>{
+ route('/products/basketball-72897001_orange');assert.match(app.innerHTML,/React Basketball/);
+ assert.match(app.innerHTML,/01 \/ 01/);assert.match(app.innerHTML,/Enlarge product photo/);
+ click('detail-plus');assert.match(app.innerHTML,/>2<\/span>/);
+ click('detail-minus');assert.match(app.innerHTML,/>1<\/span>/);
+ click('zoom');assert.match(app.innerHTML,/zoom-modal/);click('close-zoom');assert.doesNotMatch(app.innerHTML,/zoom-modal/);
 });
-test('add to cart, update quantity and display order summary',()=>{
- setRoute('/shop');clickAction('add',{id:'aero-9000'});assert.match(app.innerHTML,/cart-drawer/);
- assert.match(kv.get('cps-sports-cart'),/aero-9000/);
- clickAction('drawer-close');setRoute('/cart');assert.match(app.innerHTML,/¥1,299/);
- clickAction('cart-inc',{id:'aero-9000',color:'深海蓝'});assert.match(app.innerHTML,/¥2,598/);
- clickAction('cart-dec',{id:'aero-9000',color:'深海蓝'});assert.match(app.innerHTML,/¥1,299/)
+test('wishlist works persistently',()=>{
+ route('/shop');click('favorite',{id:'badminton-63502401'});
+ assert.match(storage.get('cps-sports-favorites'),/badminton-63502401/);
+ route('/wishlist');assert.match(app.innerHTML,/Performance Badminton Racquet/);
+ click('favorite',{id:'badminton-63502401'});assert.equal(storage.get('cps-sports-favorites'),'[]');
 });
-test('checkout stores a local TEST order and clears cart',()=>{
- setRoute('/checkout');assert.match(app.innerHTML,/不会发起真实支付/);
- submit('checkout-form',{family:'测试',given:'用户',email:'person@example.com',phone:'13800000000',address:'Example Road',city:'上海',postcode:'200001',note:''});
- assert.equal(location.pathname,'/order-success');assert.match(app.innerHTML,/测试订单已创建/);
- assert.equal(kv.get('cps-sports-cart'),'[]');assert.match(kv.get('cps-sports-orders'),/CPS-T-/)
+test('quick view and cart drawer behave correctly',()=>{
+ route('/shop');click('quick',{id:'fitness-423989'});assert.match(app.innerHTML,/quick-modal/);
+ click('close-modal');assert.doesNotMatch(app.innerHTML,/quick-modal/);
+ click('add',{id:'fitness-423989'});assert.match(app.innerHTML,/drawer/);
+ assert.match(storage.get('cps-sports-cart'),/fitness-423989/);
+ click('close-drawer');route('/cart');assert.match(app.innerHTML,/\$89/);
+ click('qty-plus',{id:'fitness-423989'});assert.match(app.innerHTML,/\$178/);
+ click('qty-minus',{id:'fitness-423989'});assert.match(app.innerHTML,/\$89/);
 });
-test('all public pages render without throwing',()=>{
- for (const route of ['/', '/shop','/sports/fitness','/sports/volleyball','/sports/tennis','/sports/table-tennis','/sports/football','/sports/basketball','/sports/accessories','/cart','/checkout','/wishlist','/account','/journal','/about','/support','/products/strength-40','/missing']){
-  setRoute(route);assert.ok(app.innerHTML.length>300,route);assert.match(app.innerHTML,/<main/)
+test('checkout creates local preview orders without simulating a real transaction',()=>{
+ route('/checkout');assert.match(app.innerHTML,/No payment is processed/);
+ submit('checkout-form',{first:'Test',last:'Guest',email:'test@example.com',address:'1 Example St',city:'Melbourne',postcode:'3000'});
+ assert.equal(location.pathname,'/order-success');assert.match(app.innerHTML,/No payment was taken/);
+ assert.equal(storage.get('cps-sports-cart'),'[]');
+ assert.match(storage.get('cps-sports-orders'),/CPS-PRE-/);
+});
+test('every public route renders complete English markup',()=>{
+ for(const page of ['/','/shop','/sports/badminton','/sports/fitness','/sports/volleyball','/sports/tennis','/sports/table-tennis','/sports/football','/sports/basketball','/sports/accessories','/products/football-74162101_yellow','/cart','/wishlist','/account','/about','/journal','/support','/missing']){
+  route(page);assert.ok(app.innerHTML.length>3000,page);assert.match(app.innerHTML,/<main id="main">/,page)
  }
+});
+test('no Chinese characters in the live storefront source or metadata',()=>{
+ for(const file of ['index.html','src/app.js','src/data.js','src/styles.css','src/icons.js']){
+  const content=fs.readFileSync(path.join(root,file),'utf8');assert.doesNotMatch(content,/\p{Script=Han}/u,`${file} contains CJK characters`)
+ }
+ const index=fs.readFileSync(path.join(root,'index.html'),'utf8');assert.match(index,/lang="en-AU"/);assert.match(index,/Xuanze Chen/)
+});
+test('motion system has interactions and reduced-motion support',()=>{
+ const css=fs.readFileSync(path.join(root,'src/styles.css'),'utf8');
+ for(const feature of ['.product-card:hover','.wishlist-button:hover','.category-card:hover','.feature-panel:hover','.button::before','.drawer','.hero-progress-item','::view-transition-new(root)','prefers-reduced-motion:reduce'])assert.ok(css.includes(feature),feature);
 });

@@ -9,3 +9,5 @@ dist/
 __pycache__/
 preview-*.png
 asset-contact-sheet*.jpg
+cutout-preview.jpg
+*.tmp
