@@ -1,66 +1,88 @@
 # CPS SPORTS
 
-**Professional sports equipment storefront / 专业体育装备电商平台**
+**Equipment for Every Move.** A premium multi-sport storefront with a motion-led interface, built around an owner-supplied product catalog.
 
-以大型产品主视觉、运动品类导航、高清独立商品图为核心的体育装备商店。支持八大运动品类、24 件初始商品、商品筛选与搜索、详情和规格、收藏、购物车、测试订单与账户订单记录。
+**Digital experience, interface direction and implementation: Xuanze Chen.**
 
-## 一键在本机运行（macOS）
+## Run on a Mac
 
-解压完整项目，双击 `START_LOCAL.command`。也可运行：
+1. Extract the source archive.
+2. Double-click `START_LOCAL.command`.
+3. The storefront opens at <http://127.0.0.1:4186>.
+
+Or use the terminal:
 
 ```bash
 cd CPS-SPORTS
-python3 -m http.server 4173
+python3 -m http.server 4186
 ```
 
-然后访问 <http://localhost:4173>。纯静态构建无 `npm install`，无需 API 密钥即可运行所有前台交互。
+No package installation, API key, account or database is required to explore the local storefront. The project uses browser-native JavaScript modules and CSS, without a framework runtime.
 
-## 开发命令
+## Pages and interactions
 
-需要 Node.js 22+：
+| Page | URL | Experience |
+| --- | --- | --- |
+| Discover | `/` | Three editorial hero slides, hover menus, eight collections, product curation, featured stories |
+| All equipment | `/shop` | Search, collection filters, interactive price range, sorting |
+| Sport collection | `/sports/:slug` | Eight sport-specific views including cross-category accessories |
+| Product details | `/products/:slug` | Studio image, accessible zoom, quantity control, add to bag, related equipment |
+| Wishlist | `/wishlist` | Saved items with local browser persistence |
+| Bag | `/cart` | Slide-over cart, full cart, quantity updates, totals |
+| Checkout | `/checkout` | Validated preview-order form (no payment) |
+| Account | `/account` | Local wishlist and preview-order history; no authentication |
+| Journal | `/journal` | Editorial content using the supplied sports imagery |
+| Our story | `/about` | Brand story and discreet Xuanze Chen design signature |
+| Help | `/support` | Information and accessible FAQ accordions |
+
+### Interaction quality
+
+- Navigation: animated underline, category megamenu, hover and focus states.
+- Product cards: responsive cursor glow, slow image scale, lift and shadow, quick-view and add-to-bag overlays.
+- CTAs: sliding colour fills, arrow movement and pointer ripples.
+- Hero: three independently composed slides, timed progress, manual arrows, and motion-safe auto-advance.
+- Shopping: slide-over bag, image zoom, quick-view modal, live filters and inline search suggestions.
+- Page transitions: native View Transitions API where supported, with a graceful fallback.
+- Scroll: staggered Intersection Observer reveals; motion is minimized for `prefers-reduced-motion: reduce`.
+- Layout: responsive desktop, tablet and mobile styling, including touch-specific controls.
+
+See [`docs/MOTION_SYSTEM.md`](docs/MOTION_SYSTEM.md) and [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
+
+## Catalog and image policy
+
+- `41` product photographs supplied in `Pics.zip` (1000 × 1000 each).
+- `4` additional editorial photographs from the same archive.
+- Original user-uploaded files preserved under `assets/originals/` in the source archive.
+- High-quality WebP derivatives under `assets/products/` and `assets/editorial/`.
+- Selective transparent derivatives on **seven high-contrast products**; other originals are kept on a matching light studio background to protect white details and fine racquet strings.
+- No generated products, invented higher-resolution detail, or legacy product photos appear on the live storefront.
+- Filenames and image-source mapping are tracked in [`docs/ASSET_MANIFEST.md`](docs/ASSET_MANIFEST.md).
+
+**Rights:** the uploaded photographs appear to include third-party product/brand imagery. Before a public commercial launch or redistribution, the owner must confirm licensing for the product photos, brand marks and editorial photographs. Product names describe identifiable imagery; prices are illustrative, not vendor quotes or verified offers.
+
+## Develop and test
+
+Node.js 22+ is recommended for automated tests and builds.
 
 ```bash
-npm run check    # JavaScript 语法检查
-npm test         # 8 个业务与路由测试
-npm run build    # 打包到 dist/
+npm run check   # Parse-check JavaScript sources
+npm test        # 11 storefront data, routes, cart, checkout and motion tests
+npm run build   # Produce deployable output in dist/
 ```
 
-Cloudflare Pages：将仓库连接至 Cloudflare Pages，Build command 为 `npm run build`，Output directory 为 `dist`。`_redirects` 负责 SPA 深链接回退。图片已经本地打包，不依赖第三方图片服务器。
+The archive includes a real Git repository with separate development branches and merge commits. Double-click `PUBLISH_TO_GITHUB.command` on macOS for an interactive private-repository publishing flow. It never backdates Git commits.
 
-## 页面与功能
+### Cloudflare Pages
 
-| 页面 | URL | 说明 |
-| --- | --- | --- |
-| 首页 | `/` | 大型轮播 Hero / Mega Menu / 八大分类 / 精选 / 专题 |
-| 全部商品 | `/shop` | 分类、价格、库存筛选、搜索与排序 |
-| 运动分类 | `/sports/:slug` | 八个运动专区 |
-| 商品详情 | `/products/:slug` | 图片、规格、颜色、数量、收藏与购买 |
-| 收藏 | `/wishlist` | 本地收藏 |
-| 购物车 | `/cart` | 增减、删除、优惠代码、金额计算 |
-| 结算 | `/checkout` | 资料校验、测试下单 |
-| 我的账户 | `/account` | 本地测试订单历史 |
-| 资讯 | `/journal` | 品牌运动资讯展示 |
-| 品牌 / 帮助 | `/about`, `/support` | 信息与 FAQ |
+Connect the GitHub repository to Cloudflare Pages:
 
-## 环境范围（重要）
+- Framework preset: **None**
+- Build command: `npm run build`
+- Output directory: `dist`
+- Node version: `22`
 
-这是可运行的 **storefront v0.1**，目前产品数据属于初始样品数据；购物车、收藏、订单记录保存在浏览器 `localStorage`。**支付、真实库存、认证、管理后台、邮件、物流以及服务器端订单存储均尚未连接**，目前结算只创建明确标注的测试订单，不会扣费或安排发货。
+`_redirects` provides the client-side deep-link fallback. All media loads from local assets, with no hotlinked retail photos.
 
-正式营业前需实现 Supabase Auth / PostgreSQL、服务端价格与库存校验、Stripe 支付、Webhook 订单状态同步、商品 CMS、税费与运费规则、政策及商户资料。参见 [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) 和 [`docs/schema.sql`](docs/schema.sql)。不能把样品数据和测试订单当作真实商业交易。
+## Production boundary
 
-## 图片素材
-
-- 首页：本地 `assets/hero-badminton.webp`（1774×887 源图优化输出）。
-- 商品：透明背景 PNG 独立输出，实际分辨率 900×720；部分来自较低像素的原创合成效果图，属于当前**初期样品素材**，并不等于原生 2K 摄影。
-- 分类：透明 PNG，小尺寸展示适配；原生高分辨率的商业商品包图需在正式上架前替换。
-- 全部图像均为本项目生成的原创概念视觉；正式上线时需要审核商品真实性、规格、商标和素材权利。
-
-图片尺寸与抠图质量目标参见 [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)。
-
-## 技术选择
-
-独立 HTML + CSS + 现代 ES Modules。当前版本无框架依赖，部署故障面小，特别适合以展示为主的站点。后期如需复杂后台可迁移至 Astro + React，而无需复制当前页面逻辑中的测试订单模型。
-
-## Git 开发方式
-
-保存了真实的 feature 分支提交、非 fast-forward 合并和发布标记；不会改写提交日期。远程仓库创建 / 发布方式见 [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md)。
+This version is a fully browsable **storefront preview**, not a live transactional retailer. Cart, wishlist and preview orders use `localStorage`. Checkout does not charge cards or send orders. Backend authentication, inventory, payment processing, shipping and email integration have not been connected. See [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) before enabling sales.

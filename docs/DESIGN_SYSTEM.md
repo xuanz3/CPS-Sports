@@ -1,37 +1,27 @@
-# CPS SPORTS — Design System / Asset Quality
+# CPS SPORTS — Interface System v0.2
 
-## 风格
+## Direction
 
-高端运动科技感：沉浸式产品叙事 + 精准克制的电商界面。避免荧光、过量玻璃拟态、彩色噪点和盲目堆叠阴影。
+Performance editorial meets precision retail. The product remains the visual focus; motion creates hierarchy rather than noise. Rebel Sport's useful commercial patterns inform filtering and merchandise discovery, while Dareu's immersive product presentation informs hero pacing and deliberate image transitions. The site does not reuse either company's code or brand identity.
 
-| Token | HEX | 用途 |
+## Foundation
+
+| Token | Hex | Usage |
 | --- | --- | --- |
-| Ink | `#101925` | 主要文字、导航 |
-| Deep Navy | `#10233A` | 品牌底色 |
-| Ocean Blue | `#2F6095` | CTA / 重要链接 |
-| Soft Blue | `#E8EEF6` | 次级模块 |
-| Paper | `#F6F7F7` | 商品摄影底色 |
-| White | `#FFFFFF` | 阅读与展示区域 |
-| Muted | `#7A8491` | 辅助文字 |
+| Obsidian | `#0C1828` | Hero, footer and navigation |
+| Deep ocean | `#162B43` | Announcement strip and dark panels |
+| Marine | `#2B5D90` | Active states and secondary interactions |
+| Glacier | `#EEF2F5` | Light collection panels |
+| Warm white | `#F6F5F1` | Editorial backgrounds |
+| Ink | `#101C2C` | Primary text |
+| Steel | `#788494` | Secondary text |
 
-字体：系统 Inter / Helvetica Neue / 苹方 / Noto Sans CJK SC。桌面布局最大宽度 1440px，内容边距不低于 48px；移动端主边距 17px。
+No fluorescent gradients or neon effects. Avoid decorative glassmorphism, generic SaaS cards and gratuitous glows.
 
-## 高清图片验收标准（正式运营素材）
+**Typography:** DM Sans for utility content, Barlow Condensed for overscale editorial statements. Font fallbacks are provided for offline use.
 
-- 产品主图：**原生**长边至少 2000px，优先原生 2400×2400 以上；不得通过软件放大低清图冒充高分辨率原片。
-- Hero：建议提供 4K 级横幅源文件，保留主体安全区，设计师裁切时同时检验桌面和手机构图。
-- 产品抠图：透明 RGBA / SVG，100% 与 200% 缩放检查；无明显白边、彩边、锯齿、主体截断、丢失网线、穿孔或底色残留。
-- 商品主体应居中、完整，分类图允许针对形态调整留白；物品颜色不得因去底算法改变。阴影单独生成，避免抠图将原有背景阴影一并带入。
-- 展示资源转换为 WebP / AVIF，适配响应式尺寸，保留原始高清文件作为可追溯资产。
-- 上传前检查图片授权、是否真实反映商品、商标使用权、素材版本、色彩空间和压缩效果。
+**Layout:** maximum reading width 1450px; product grids 4/3/2 columns by desktop/tablet/mobile, respectively. Navigation remains legible and touch accessible.
 
-当前初始素材是 AI 原创合成视觉的拆分与透明处理，用于验证交互与 UI。**没有通过全部正式商用商品摄影验收标准**，切忌把「输出 900×720 PNG」当作原生高清拍摄。
+**Product photography:** source 1000px images are retained. Optimised WebP derivatives preserve the original detail; there is no artificial 4K upscale. Transparent derivations only where accurate segmentation can be achieved. Avoid destroying fine badminton strings and white trims through aggressive background removal.
 
-## 页面体验
-
-- Mega Menu 使用结构化分类数据；移动端切换到独立菜单。
-- Desktop 首屏主视觉高 590px；移动端 590px，文案和主体单独调布局。
-- 列表每排 4（桌面）/ 3（中屏）/ 2（手机）。
-- 商品主图使用 `object-fit: contain`，保持主体比例、不裁断球拍、鞋、球等形状。
-- 对用户动作提供即时反馈：购物车抽屉、收藏状态、表单校验、空结果处理。
-- 尊重 `prefers-reduced-motion`，禁用不必要的动画。
+**Authorship mark:** the name Xuanze Chen appears in the meta author, footer signature, brand story and product-experience inscription. It identifies interface authorship, not ownership of independent retail brands or photographs.

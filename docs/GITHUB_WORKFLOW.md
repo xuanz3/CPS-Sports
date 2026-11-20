@@ -1,29 +1,21 @@
-# GitHub Workflows
+# CPS SPORTS — GitHub Workflow
 
-## 分支与审核
+## Branch strategy
 
-- `main`：经过测试的发布分支。
-- `develop`：功能集成分支。
-- `feature/*`：独立功能分支，提交小且可读。
-- 功能分支 → PR 至 `develop` → CI 通过 → Review → Merge（保留提交）→ 版本发布时从 `develop` PR 至 `main`。
+- `main`: verified release state.
+- `develop`: integration branch.
+- `feature/*`: scoped source, asset, interaction and quality changes.
 
-项目附带了本地真实开发提交与合并记录；首次发布到远程不等于历史上的提交在 GitHub 不同日期发生。所有记录采用真实时间，不伪造时间戳、不伪装他人审核，也不捏造周数。
+Each feature is committed as genuinely produced. Changes are merged using regular non-fast-forward merge commits to keep an intelligible development trail. No commit timestamps are falsified or backdated.
 
-## 建立远程仓库
+## Change process
 
-最省操作的方法：本机安装并授权 GitHub CLI `gh`，双击 `PUBLISH_TO_GITHUB.command`。脚本会检查并创建 **private** 仓库 `CPS-SPORTS`，然后推送 `main` 与标记。若没有 `gh`，脚本会打开 GitHub 新建仓库页面，请创建**空仓库**（不勾选 README / gitignore），再填入仓库 URL。
+1. Branch from `develop`.
+2. Commit a cohesive improvement with a descriptive conventional-commit message.
+3. Run `npm run check`, `npm test`, and `npm run build`.
+4. Open a pull request in GitHub after pushing the branch.
+5. Review and merge it into `develop`, then release to `main` after verifying the integration.
 
-第一次创建完成之后，后续功能只需标准操作：
+The included local Git history contains authentic branch and merge operations. These local merges are not GitHub pull requests; to create visible remote PRs, push future feature branches and open PRs in the GitHub interface.
 
-```bash
-git switch develop
-git switch -c feature/your-change
-# 编写并自测
-npm run check && npm test && npm run build
-git add .
-git commit -m "feat: your clear change"
-git push -u origin feature/your-change
-# 在 GitHub 创建 Pull Request → develop
-```
-
-`main` 启用分支保护：必须 CI 通过；要求 PR 合并；不允许强制推送。没有足够的审核人员时可先启用 CI + PR，按需要逐步增加审核规则。
+The publisher script creates or connects to a private `CPS-SPORTS` repository, then pushes `main` and tags. GitHub authentication may require a one-time browser sign-in.
